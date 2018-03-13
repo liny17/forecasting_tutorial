@@ -1,0 +1,27 @@
+---
+title: "Tutorial"
+author: "Jamey McDowell and Steffani Gomez"
+date: "March 13, 2018"
+output: html_notebook
+---
+
+# {.tabset .tabset-fade}
+
+## Time Series Objects
+
+In R there are two primary time series objects that are used.  These objects are either <code>ts</code> or <code>xts</code>.  For the purpose of this tutorial, we are going to focus on using <code>ts</code>.  R preloads this function throug the <code>stats</code> package.
+
+### What is a ts object
+
+## Libraries
+
+## EDA Tutorial
+
+## Seasonality
+
+## Models
+
+## Model Evaluation
+
+
+
