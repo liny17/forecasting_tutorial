@@ -178,11 +178,59 @@ $(document).ready(function () {
 <!-- rnb-text-begin -->
 <div id="section" class="section level1 tabset tabset-fade">
 <h1></h1>
-<div id="time-series-objects" class="section level2">
-<h2>Time Series Objects</h2>
-<p>In R there are two primary time series objects that are used. These objects are either <code>ts</code> or <code>xts</code>. For the purpose of this tutorial, we are going to focus on using <code>ts</code>. R preloads this function throug the <code>stats</code> package.</p>
-<div id="what-is-a-ts-object" class="section level3">
-<h3>What is a ts object</h3>
+<div id="introduction" class="section level2">
+<h2>Introduction</h2>
+<p>This tutorial is build under the assumption that those reading are already familiar with using dataframes in R. This includes familiarity with subsetting and the library <code>dplyr</code> for data manipulation.</p>
+<p>In R there are two primary time series objects that are used. These objects are either <code>ts</code> or <code>xts</code>.</p>
+<p>For the purpose of this tutorial, we are going to focus on using <code>ts</code> to create time-series objects. R preloads this function through the <code>stats</code> package.</p>
+<div id="making-a-univariate-time-series-objects" class="section level3">
+<h3>Making a Univariate Time-Series Objects</h3>
+<p>Columns are variables, observations are rows. You can view a time-series object the same way as a matrix or dataframe. At its core, a time-series object is a vector (univariate) or matrix (multivariate). Dataframes are implicitly converted to matrices before they are actually converted to a time-series object.</p>
+<p>Consider, for example, loading the co2_ts.csv file:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY28yX2RmIDwtIHJlYWQuY3N2KFwiY28yX3RzLmNzdlwiKVxuY2xhc3MoY28yX2RmKVxuYGBgIn0= -->
+<pre class="r"><code>co2_df &lt;- read.csv(&quot;co2_ts.csv&quot;)
+class(co2_df)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiZGF0YS5mcmFtZVwiXG4ifQ== -->
+<pre><code>[1] &quot;data.frame&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>When first loaded, note that R saves the file as a data frame. Therefore we must convert the data frame to a time series object. To make a time series object, we need to know the start, end, and frequency for our data. For this csv file, the data is already sorted for us. If this were not the case, we could use the <code>arrange</code> function from <code>dplyr</code> package to sort the data instead. Because we already have the month number in one column and the year column in another, we can sort the data accordingly:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcbmNvMl9kZiA8LSBjbzJfZGYgJT4lXG4gIGFycmFuZ2UoWWVhciwgTW9udGgpXG5gYGAifQ== -->
+<pre class="r"><code>library(dplyr)
+co2_df &lt;- co2_df %&gt;%
+  arrange(Year, Month)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>By visually inspecting this newly arranged data, we see that the dataset runs from <code>05-1974</code> to <code>09-1987</code>. Therefore we will specify the start and end dates accordingly when making the time series objects. Because we are dealing with monthly data, we set the frequency argument to 12.</p>
+<p>We also see that we are dealing with univariate data. Therefore when making the time series object, we only need to take the <code>CO2</code> column from the data frame.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>This code took only the <code>CO2</code> column from our original data frame since this is the only column that contains data not pertaining to the date.</p>
+<p>Our new object is of type <code>ts</code>.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2xhc3MoY28yX3RzKVxuXG5gYGAifQ== -->
+<pre class="r"><code>class(co2_ts)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwidHNcIlxuIn0= -->
+<pre><code>[1] &quot;ts&quot;</code></pre>
+<!-- rnb-output-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+</div>
+<div id="making-a-multivariate-time-series-object" class="section level3">
+<h3>Making a Multivariate Time Series Object</h3>
+<p>Will fill this in once we have a multivariate time series set to work with.</p>
 </div>
 </div>
 <div id="libraries" class="section level2">
@@ -203,7 +251,7 @@ $(document).ready(function () {
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlR1dG9yaWFsIg0KYXV0aG9yOiAiSmFtZXkgTWNEb3dlbGwgYW5kIFN0ZWZmYW5pIEdvbWV6Ig0KZGF0ZTogIk1hcmNoIDEzLCAyMDE4Ig0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyB7LnRhYnNldCAudGFic2V0LWZhZGV9DQoNCiMjIFRpbWUgU2VyaWVzIE9iamVjdHMNCg0KSW4gUiB0aGVyZSBhcmUgdHdvIHByaW1hcnkgdGltZSBzZXJpZXMgb2JqZWN0cyB0aGF0IGFyZSB1c2VkLiAgVGhlc2Ugb2JqZWN0cyBhcmUgZWl0aGVyIDxjb2RlPnRzPC9jb2RlPiBvciA8Y29kZT54dHM8L2NvZGU+LiAgRm9yIHRoZSBwdXJwb3NlIG9mIHRoaXMgdHV0b3JpYWwsIHdlIGFyZSBnb2luZyB0byBmb2N1cyBvbiB1c2luZyA8Y29kZT50czwvY29kZT4uICBSIHByZWxvYWRzIHRoaXMgZnVuY3Rpb24gdGhyb3VnIHRoZSA8Y29kZT5zdGF0czwvY29kZT4gcGFja2FnZS4NCg0KIyMjIFdoYXQgaXMgYSB0cyBvYmplY3QNCg0KIyMgTGlicmFyaWVzDQoNCiMjIEVEQSBUdXRvcmlhbA0KDQojIyBTZWFzb25hbGl0eQ0KDQojIyBNb2RlbHMNCg0KIyMgTW9kZWwgRXZhbHVhdGlvbg0KDQoNCg0K</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlR1dG9yaWFsIg0KYXV0aG9yOiAiSmFtZXkgTWNEb3dlbGwgYW5kIFN0ZWZmYW5pIEdvbWV6Ig0KZGF0ZTogIk1hcmNoIDEzLCAyMDE4Ig0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyB7LnRhYnNldCAudGFic2V0LWZhZGV9DQoNCiMjIEludHJvZHVjdGlvbg0KDQpUaGlzIHR1dG9yaWFsIGlzIGJ1aWxkIHVuZGVyIHRoZSBhc3N1bXB0aW9uIHRoYXQgdGhvc2UgcmVhZGluZyBhcmUgYWxyZWFkeSBmYW1pbGlhciB3aXRoIHVzaW5nIGRhdGFmcmFtZXMgaW4gUi4gIFRoaXMgaW5jbHVkZXMgZmFtaWxpYXJpdHkgd2l0aCBzdWJzZXR0aW5nIGFuZCB0aGUgbGlicmFyeSA8Y29kZT5kcGx5cjwvY29kZT4gZm9yIGRhdGEgbWFuaXB1bGF0aW9uLg0KDQpJbiBSIHRoZXJlIGFyZSB0d28gcHJpbWFyeSB0aW1lIHNlcmllcyBvYmplY3RzIHRoYXQgYXJlIHVzZWQuICBUaGVzZSBvYmplY3RzIGFyZSBlaXRoZXIgPGNvZGU+dHM8L2NvZGU+IG9yIDxjb2RlPnh0czwvY29kZT4uICANCg0KRm9yIHRoZSBwdXJwb3NlIG9mIHRoaXMgdHV0b3JpYWwsIHdlIGFyZSBnb2luZyB0byBmb2N1cyBvbiB1c2luZyA8Y29kZT50czwvY29kZT4gdG8gY3JlYXRlIHRpbWUtc2VyaWVzIG9iamVjdHMuICBSIHByZWxvYWRzIHRoaXMgZnVuY3Rpb24gdGhyb3VnaCB0aGUgPGNvZGU+c3RhdHM8L2NvZGU+IHBhY2thZ2UuDQoNCiMjIyBNYWtpbmcgYSBVbml2YXJpYXRlIFRpbWUtU2VyaWVzIE9iamVjdHMNCg0KQ29sdW1ucyBhcmUgdmFyaWFibGVzLCBvYnNlcnZhdGlvbnMgYXJlIHJvd3MuICBZb3UgY2FuIHZpZXcgYSB0aW1lLXNlcmllcyBvYmplY3QgdGhlIHNhbWUgd2F5IGFzIGEgbWF0cml4IG9yIGRhdGFmcmFtZS4gIEF0IGl0cyBjb3JlLCBhIHRpbWUtc2VyaWVzIG9iamVjdCBpcyBhIHZlY3RvciAodW5pdmFyaWF0ZSkgb3IgbWF0cml4IChtdWx0aXZhcmlhdGUpLiAgRGF0YWZyYW1lcyBhcmUgaW1wbGljaXRseSBjb252ZXJ0ZWQgdG8gbWF0cmljZXMgYmVmb3JlIHRoZXkgYXJlIGFjdHVhbGx5IGNvbnZlcnRlZCB0byBhIHRpbWUtc2VyaWVzIG9iamVjdC4NCg0KQ29uc2lkZXIsIGZvciBleGFtcGxlLCBsb2FkaW5nIHRoZSBjbzJfdHMuY3N2IGZpbGU6DQoNCmBgYHtyfQ0KY28yX2RmIDwtIHJlYWQuY3N2KCJjbzJfdHMuY3N2IikNCg0KY2xhc3MoY28yX2RmKQ0KYGBgDQoNCldoZW4gZmlyc3QgbG9hZGVkLCBub3RlIHRoYXQgUiBzYXZlcyB0aGUgZmlsZSBhcyBhIGRhdGEgZnJhbWUuICBUaGVyZWZvcmUgd2UgbXVzdCBjb252ZXJ0IHRoZSBkYXRhIGZyYW1lIHRvIGEgdGltZSBzZXJpZXMgb2JqZWN0LiAgVG8gbWFrZSBhIHRpbWUgc2VyaWVzIG9iamVjdCwgd2UgbmVlZCB0byBrbm93IHRoZSBzdGFydCwgZW5kLCBhbmQgZnJlcXVlbmN5IGZvciBvdXIgZGF0YS4gIEZvciB0aGlzIGNzdiBmaWxlLCB0aGUgZGF0YSBpcyBhbHJlYWR5IHNvcnRlZCBmb3IgdXMuICBJZiB0aGlzIHdlcmUgbm90IHRoZSBjYXNlLCB3ZSBjb3VsZCB1c2UgdGhlIDxjb2RlPmFycmFuZ2U8L2NvZGU+IGZ1bmN0aW9uIGZyb20gPGNvZGU+ZHBseXI8L2NvZGU+IHBhY2thZ2UgdG8gc29ydCB0aGUgZGF0YSBpbnN0ZWFkLiAgQmVjYXVzZSB3ZSBhbHJlYWR5IGhhdmUgdGhlIG1vbnRoIG51bWJlciBpbiBvbmUgY29sdW1uIGFuZCB0aGUgeWVhciBjb2x1bW4gaW4gYW5vdGhlciwgd2UgY2FuIHNvcnQgdGhlIGRhdGEgYWNjb3JkaW5nbHk6DQoNCmBgYHtyLCBvdXRwdXQgPSBGQUxTRX0NCmxpYnJhcnkoZHBseXIpDQoNCmNvMl9kZiA8LSBjbzJfZGYgJT4lDQogIGFycmFuZ2UoWWVhciwgTW9udGgpDQpgYGANCg0KQnkgdmlzdWFsbHkgaW5zcGVjdGluZyB0aGlzIG5ld2x5IGFycmFuZ2VkIGRhdGEsIHdlIHNlZSB0aGF0IHRoZSBkYXRhc2V0IHJ1bnMgZnJvbSA8Y29kZT4wNS0xOTc0PC9jb2RlPiB0byA8Y29kZT4wOS0xOTg3PC9jb2RlPi4gIFRoZXJlZm9yZSB3ZSB3aWxsIHNwZWNpZnkgdGhlIHN0YXJ0IGFuZCBlbmQgZGF0ZXMgYWNjb3JkaW5nbHkgd2hlbiBtYWtpbmcgdGhlIHRpbWUgc2VyaWVzIG9iamVjdHMuICBCZWNhdXNlIHdlIGFyZSBkZWFsaW5nIHdpdGggbW9udGhseSBkYXRhLCB3ZSBzZXQgdGhlIGZyZXF1ZW5jeSBhcmd1bWVudCB0byAxMi4NCg0KV2UgYWxzbyBzZWUgdGhhdCB3ZSBhcmUgZGVhbGluZyB3aXRoIHVuaXZhcmlhdGUgZGF0YS4gIFRoZXJlZm9yZSB3aGVuIG1ha2luZyB0aGUgdGltZSBzZXJpZXMgb2JqZWN0LCB3ZSBvbmx5IG5lZWQgdG8gdGFrZSB0aGUgPGNvZGU+Q08yPC9jb2RlPiBjb2x1bW4gZnJvbSB0aGUgZGF0YSBmcmFtZS4NCg0KYGBge3J9DQpjbzJfdHMgPC0gdHMoY28yX2RmJENPMiwgc3RhcnQgPSBjKDE5NzQsIDUpLCBlbmQgPSBjKDE5ODcsIDkpLCBmcmVxdWVuY3kgPSAxMikNCmBgYA0KDQpUaGlzIGNvZGUgdG9vayBvbmx5IHRoZSA8Y29kZT5DTzI8L2NvZGU+IGNvbHVtbiBmcm9tIG91ciBvcmlnaW5hbCBkYXRhIGZyYW1lIHNpbmNlIHRoaXMgaXMgdGhlIG9ubHkgY29sdW1uIHRoYXQgY29udGFpbnMgZGF0YSBub3QgcGVydGFpbmluZyB0byB0aGUgZGF0ZS4NCg0KT3VyIG5ldyBvYmplY3QgaXMgb2YgdHlwZSA8Y29kZT50czwvY29kZT4uDQoNCmBgYHtyfQ0KY2xhc3MoY28yX3RzKQ0KYGBgDQoNCiMjIyBNYWtpbmcgYSBNdWx0aXZhcmlhdGUgVGltZSBTZXJpZXMgT2JqZWN0DQoNCldpbGwgZmlsbCB0aGlzIGluIG9uY2Ugd2UgaGF2ZSBhIG11bHRpdmFyaWF0ZSB0aW1lIHNlcmllcyBzZXQgdG8gd29yayB3aXRoLg0KDQojIyBMaWJyYXJpZXMNCg0KIyMgRURBIFR1dG9yaWFsDQoNCiMjIFNlYXNvbmFsaXR5DQoNCiMjIE1vZGVscw0KDQojIyBNb2RlbCBFdmFsdWF0aW9uDQoNCg0KDQo=</div>
 
 
 

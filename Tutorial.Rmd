@@ -7,11 +7,54 @@ output: html_notebook
 
 # {.tabset .tabset-fade}
 
-## Time Series Objects
+## Introduction
 
-In R there are two primary time series objects that are used.  These objects are either <code>ts</code> or <code>xts</code>.  For the purpose of this tutorial, we are going to focus on using <code>ts</code>.  R preloads this function throug the <code>stats</code> package.
+This tutorial is build under the assumption that those reading are already familiar with using dataframes in R.  This includes familiarity with subsetting and the library <code>dplyr</code> for data manipulation.
 
-### What is a ts object
+In R there are two primary time series objects that are used.  These objects are either <code>ts</code> or <code>xts</code>.  
+
+For the purpose of this tutorial, we are going to focus on using <code>ts</code> to create time-series objects.  R preloads this function through the <code>stats</code> package.
+
+### Making a Univariate Time-Series Objects
+
+Columns are variables, observations are rows.  You can view a time-series object the same way as a matrix or dataframe.  At its core, a time-series object is a vector (univariate) or matrix (multivariate).  Dataframes are implicitly converted to matrices before they are actually converted to a time-series object.
+
+Consider, for example, loading the co2_ts.csv file:
+
+```{r}
+co2_df <- read.csv("co2_ts.csv")
+
+class(co2_df)
+```
+
+When first loaded, note that R saves the file as a data frame.  Therefore we must convert the data frame to a time series object.  To make a time series object, we need to know the start, end, and frequency for our data.  For this csv file, the data is already sorted for us.  If this were not the case, we could use the <code>arrange</code> function from <code>dplyr</code> package to sort the data instead.  Because we already have the month number in one column and the year column in another, we can sort the data accordingly:
+
+```{r, output = FALSE}
+library(dplyr)
+
+co2_df <- co2_df %>%
+  arrange(Year, Month)
+```
+
+By visually inspecting this newly arranged data, we see that the dataset runs from <code>05-1974</code> to <code>09-1987</code>.  Therefore we will specify the start and end dates accordingly when making the time series objects.  Because we are dealing with monthly data, we set the frequency argument to 12.
+
+We also see that we are dealing with univariate data.  Therefore when making the time series object, we only need to take the <code>CO2</code> column from the data frame.
+
+```{r}
+co2_ts <- ts(co2_df$CO2, start = c(1974, 5), end = c(1987, 9), frequency = 12)
+```
+
+This code took only the <code>CO2</code> column from our original data frame since this is the only column that contains data not pertaining to the date.
+
+Our new object is of type <code>ts</code>.
+
+```{r}
+class(co2_ts)
+```
+
+### Making a Multivariate Time Series Object
+
+Will fill this in once we have a multivariate time series set to work with.
 
 ## Libraries
 
