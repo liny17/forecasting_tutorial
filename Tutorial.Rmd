@@ -58,6 +58,7 @@ Will fill this in once we have a multivariate time series set to work with.
 
 ## Libraries
 
+<<<<<<< HEAD
 The main library used for forecasting in R is (surprise) the <code>forecast</code> package!
 
 ```{r}
@@ -80,6 +81,14 @@ Note the weird format argument.  Look more at the <code>strptime</code> function
 
 The primary reasoning here is that R stores time variables as either a  <code>POSIXlt</code> object for 
 
+=======
+There is a main libraries in R for forecasting. This is the *sarima* library, which handles ARMA and ARIMA models for us, allowing us to set parameters easily.
+
+```{r}
+library(sarima)
+```
+
+>>>>>>> 08457bf5dbd98d5a5f7bde0d8d01b72ecdf24738
 
 ## EDA Tutorial
 
@@ -97,6 +106,52 @@ Acf(co2_ts)
 ## Seasonality
 
 ## Models
+
+This is an example of forecasting in R.
+
+```{r}
+library(dplyr)
+solarpv_df <- read.csv("solarpv.csv")
+
+# using the lapply function to look at the data type of each variable, and we see that our date is not in 
+# a date format 
+lapply(solarpv_df, class)
+
+# to transform, we are going to need the as.Date() function 
+solarpv_df$EDT <- as.Date(solarpv_df$EDT, "%a, %d %b %Y")
+lapply(solarpv_df, class)
+
+# https://www.statmethods.net/input/dates.html
+# now we can see we transformed the date properly
+
+
+# here we plot the series, a univariate series as we can see
+plot(y=solarpv_df$kW_Gen, x=solarpv_df$EDT, type='l')
+
+acf(solarpv_df$kW_Gen, lag.max = 24)
+pacf(solarpv_df$kW_Gen, lag.max = 24)
+
+# autocorrelation white noise test
+whiteNoiseTest(autocorrelations(solarpv_df$kW_Gen, maxlag = 24), h0 = "iid", nlags = c(6,12,18,24), x = x, method = "LjungBox")
+
+mean(solarpv_df$kW_Gen)
+sd(solarpv_df$kW_Gen)
+length(solarpv_df$kW_Gen)
+
+
+#estimate arima model
+mod.1 <- arima(solarpv_df$kW_Gen, order=c(1,0,0), method = "ML")
+mod.2 <- sarima(solarpv_df$kW_Gen, p = 1, d = 0, q = 0)
+mod.1
+mod.2
+ 
+#diagnose arima model
+acf(mod.1$residuals)
+pacf(mod.1$residuals)
+Box.test(mod.1$residuals)
+
+```
+
 
 ## Model Evaluation
 
