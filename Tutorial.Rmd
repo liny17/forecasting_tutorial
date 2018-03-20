@@ -9,7 +9,7 @@ output: html_notebook
 
 ## Introduction
 
-This tutorial is build under the assumption that those reading are already familiar with using dataframes in R.  This includes familiarity with subsetting and the library <code>dplyr</code> for data manipulation.
+This tutorial is for those already familiar with using dataframes in R.  This includes familiarity with subsetting and the library <code>dplyr</code> for data manipulation.
 
 In R there are two primary time series objects that are used.  These objects are either <code>ts</code> or <code>xts</code>.  
 
@@ -58,7 +58,29 @@ Will fill this in once we have a multivariate time series set to work with.
 
 ## Libraries
 
-There are two main libraries in R for forecasting. The is the *sarima* library, which handles ARMA and ARIMA models for us, allowing us to set parameters easily, but especially lets us compute many of the graphs that SAS does automatically.
+The main library used for forecasting in R is (surprise) the <code>forecast</code> package!
+
+```{r}
+library(forecast)
+```
+
+With this package come several useful functions.  The ones that we are going to discuss in this tutorial include ... The full uses of this package can be found at https://cran.r-project.org/web/packages/forecast/forecast.pdf.
+
+## Messy Data Examples
+
+Consider the ch1_demodat.csv file from class on March 15.  This data has both missing values and a difficult-to-parse <code>dtdate</code> variable.  We will first work on the <code>dtdate</code> variable by using the <code>strptime</code> function.
+
+```{r}
+ch1_demodat <- read.csv("ch1_demodat.csv")
+
+ch1_demodat$time <- strptime(ch1$dtdate, format = '%d%b%Y:%T')
+```
+
+Note the weird format argument.  Look more at the <code>strptime</code> function for more informration on how I chose this by typing "?strptime" in the console.
+
+The primary reasoning here is that R stores time variables as either a  <code>POSIXlt</code> object for 
+
+There is a main library in R for forecasting. This is the *sarima* library, which handles ARMA and ARIMA models for us, allowing us to set parameters easily.
 
 ```{r}
 library(sarima)
@@ -70,9 +92,18 @@ The second library is the *astsa* library, which lets us run arima with a consta
 library(astsa)
 ```
 
-
-
 ## EDA Tutorial
+
+We can use the basic plot function to visualize the data set:
+
+```{r}
+plot(co2_ts)
+```
+
+```{r}
+Acf(co2_ts)
+```
+
 
 ## Seasonality
 

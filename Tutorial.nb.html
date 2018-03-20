@@ -180,7 +180,7 @@ $(document).ready(function () {
 <h1></h1>
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>This tutorial is build under the assumption that those reading are already familiar with using dataframes in R. This includes familiarity with subsetting and the library <code>dplyr</code> for data manipulation.</p>
+<p>This tutorial is for those already familiar with using dataframes in R. This includes familiarity with subsetting and the library <code>dplyr</code> for data manipulation.</p>
 <p>In R there are two primary time series objects that are used. These objects are either <code>ts</code> or <code>xts</code>.</p>
 <p>For the purpose of this tutorial, we are going to focus on using <code>ts</code> to create time-series objects. R preloads this function through the <code>stats</code> package.</p>
 <div id="making-a-univariate-time-series-objects" class="section level3">
@@ -189,20 +189,19 @@ $(document).ready(function () {
 <p>Consider, for example, loading the co2_ts.csv file:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY28yX2RmIDwtIHJlYWQuY3N2KFwiY28yX3RzLmNzdlwiKVxuY2xhc3MoY28yX2RmKVxuYGBgIn0= -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY28yX2RmIDwtIHJlYWQuY3N2KFwiY28yX3RzLmNzdlwiKVxuXG5jbGFzcyhjbzJfZGYpXG5gYGAifQ== -->
 <pre class="r"><code>co2_df &lt;- read.csv(&quot;co2_ts.csv&quot;)
+
 class(co2_df)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwiZGF0YS5mcmFtZVwiXG4ifQ== -->
-<pre><code>[1] &quot;data.frame&quot;</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>When first loaded, note that R saves the file as a data frame. Therefore we must convert the data frame to a time series object. To make a time series object, we need to know the start, end, and frequency for our data. For this csv file, the data is already sorted for us. If this were not the case, we could use the <code>arrange</code> function from <code>dplyr</code> package to sort the data instead. Because we already have the month number in one column and the year column in another, we can sort the data accordingly:</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcbmNvMl9kZiA8LSBjbzJfZGYgJT4lXG4gIGFycmFuZ2UoWWVhciwgTW9udGgpXG5gYGAifQ== -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcblxuY28yX2RmIDwtIGNvMl9kZiAlPiVcbiAgYXJyYW5nZShZZWFyLCBNb250aClcbmBgYCJ9 -->
 <pre class="r"><code>library(dplyr)
+
 co2_df &lt;- co2_df %&gt;%
   arrange(Year, Month)</code></pre>
 <!-- rnb-source-end -->
@@ -212,19 +211,18 @@ co2_df &lt;- co2_df %&gt;%
 <p>We also see that we are dealing with univariate data. Therefore when making the time series object, we only need to take the <code>CO2</code> column from the data frame.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY28yX3RzIDwtIHRzKGNvMl9kZiRDTzIsIHN0YXJ0ID0gYygxOTc0LCA1KSwgZW5kID0gYygxOTg3LCA5KSwgZnJlcXVlbmN5ID0gMTIpXG5gYGAifQ== -->
+<pre class="r"><code>co2_ts &lt;- ts(co2_df$CO2, start = c(1974, 5), end = c(1987, 9), frequency = 12)</code></pre>
+<!-- rnb-source-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 <p>This code took only the <code>CO2</code> column from our original data frame since this is the only column that contains data not pertaining to the date.</p>
 <p>Our new object is of type <code>ts</code>.</p>
 <!-- rnb-text-end -->
 <!-- rnb-chunk-begin -->
-<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2xhc3MoY28yX3RzKVxuXG5gYGAifQ== -->
-<pre class="r"><code>class(co2_ts)
-</code></pre>
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2xhc3MoY28yX3RzKVxuYGBgIn0= -->
+<pre class="r"><code>class(co2_ts)</code></pre>
 <!-- rnb-source-end -->
-<!-- rnb-output-begin eyJkYXRhIjoiWzFdIFwidHNcIlxuIn0= -->
-<pre><code>[1] &quot;ts&quot;</code></pre>
-<!-- rnb-output-end -->
 <!-- rnb-chunk-end -->
 <!-- rnb-text-begin -->
 </div>
@@ -235,15 +233,117 @@ co2_df &lt;- co2_df %&gt;%
 </div>
 <div id="libraries" class="section level2">
 <h2>Libraries</h2>
+<p>The main library used for forecasting in R is (surprise) the <code>forecast</code> package!</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShmb3JlY2FzdClcbmBgYCJ9 -->
+<pre class="r"><code>library(forecast)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>With this package come several useful functions. The ones that we are going to discuss in this tutorial include … The full uses of this package can be found at <a href="https://cran.r-project.org/web/packages/forecast/forecast.pdf" class="uri">https://cran.r-project.org/web/packages/forecast/forecast.pdf</a>.</p>
+</div>
+<div id="messy-data-examples" class="section level2">
+<h2>Messy Data Examples</h2>
+<p>Consider the ch1_demodat.csv file from class on March 15. This data has both missing values and a difficult-to-parse <code>dtdate</code> variable. We will first work on the <code>dtdate</code> variable by using the <code>strptime</code> function.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuY2gxX2RlbW9kYXQgPC0gcmVhZC5jc3YoXCJjaDFfZGVtb2RhdC5jc3ZcIilcblxuY2gxX2RlbW9kYXQkdGltZSA8LSBzdHJwdGltZShjaDEkZHRkYXRlLCBmb3JtYXQgPSAnJWQlYiVZOiVUJylcbmBgYCJ9 -->
+<pre class="r"><code>ch1_demodat &lt;- read.csv(&quot;ch1_demodat.csv&quot;)
+
+ch1_demodat$time &lt;- strptime(ch1$dtdate, format = '%d%b%Y:%T')</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>Note the weird format argument. Look more at the <code>strptime</code> function for more informration on how I chose this by typing “?strptime” in the console.</p>
+<p>The primary reasoning here is that R stores time variables as either a <code>POSIXlt</code> object for</p>
+<p>There is a main library in R for forecasting. This is the <em>sarima</em> library, which handles ARMA and ARIMA models for us, allowing us to set parameters easily.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShzYXJpbWEpXG5gYGAifQ== -->
+<pre class="r"><code>library(sarima)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<p>The second library is the <em>astsa</em> library, which lets us run arima with a constant vs running arima without a constant.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShhc3RzYSlcbmBgYCJ9 -->
+<pre class="r"><code>library(astsa)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 </div>
 <div id="eda-tutorial" class="section level2">
 <h2>EDA Tutorial</h2>
+<p>We can use the basic plot function to visualize the data set:</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxucGxvdChjbzJfdHMpXG5gYGAifQ== -->
+<pre class="r"><code>plot(co2_ts)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxuQWNmKGNvMl90cylcbmBgYCJ9 -->
+<pre class="r"><code>Acf(co2_ts)</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 </div>
 <div id="seasonality" class="section level2">
 <h2>Seasonality</h2>
 </div>
 <div id="models" class="section level2">
 <h2>Models</h2>
+<p>This is an example of forecasting in R.</p>
+<!-- rnb-text-end -->
+<!-- rnb-chunk-begin -->
+<!-- rnb-source-begin eyJkYXRhIjoiYGBgclxubGlicmFyeShkcGx5cilcbnNvbGFycHZfZGYgPC0gcmVhZC5jc3YoXCJzb2xhcnB2LmNzdlwiKVxuXG4jIHVzaW5nIHRoZSBsYXBwbHkgZnVuY3Rpb24gdG8gbG9vayBhdCB0aGUgZGF0YSB0eXBlIG9mIGVhY2ggdmFyaWFibGUsIGFuZCB3ZSBzZWUgdGhhdCBvdXIgZGF0ZSBpcyBub3QgaW4gXG4jIGEgZGF0ZSBmb3JtYXQgXG5sYXBwbHkoc29sYXJwdl9kZiwgY2xhc3MpXG5cbiMgdG8gdHJhbnNmb3JtLCB3ZSBhcmUgZ29pbmcgdG8gbmVlZCB0aGUgYXMuRGF0ZSgpIGZ1bmN0aW9uIFxuc29sYXJwdl9kZiRFRFQgPC0gYXMuRGF0ZShzb2xhcnB2X2RmJEVEVCwgXCIlYSwgJWQgJWIgJVlcIilcbmxhcHBseShzb2xhcnB2X2RmLCBjbGFzcylcblxuIyBodHRwczovL3d3dy5zdGF0bWV0aG9kcy5uZXQvaW5wdXQvZGF0ZXMuaHRtbFxuIyBub3cgd2UgY2FuIHNlZSB3ZSB0cmFuc2Zvcm1lZCB0aGUgZGF0ZSBwcm9wZXJseVxuXG5cbiMgaGVyZSB3ZSBwbG90IHRoZSBzZXJpZXMsIGEgdW5pdmFyaWF0ZSBzZXJpZXMgYXMgd2UgY2FuIHNlZVxucGxvdCh5PXNvbGFycHZfZGYka1dfR2VuLCB4PXNvbGFycHZfZGYkRURULCB0eXBlPSdsJylcblxuYWNmKHNvbGFycHZfZGYka1dfR2VuLCBsYWcubWF4ID0gMjQpXG5wYWNmKHNvbGFycHZfZGYka1dfR2VuLCBsYWcubWF4ID0gMjQpXG5cbiMgYXV0b2NvcnJlbGF0aW9uIHdoaXRlIG5vaXNlIHRlc3RcbndoaXRlTm9pc2VUZXN0KGF1dG9jb3JyZWxhdGlvbnMoc29sYXJwdl9kZiRrV19HZW4sIG1heGxhZyA9IDI0KSwgaDAgPSBcImlpZFwiLCBubGFncyA9IGMoNiwxMiwxOCwyNCksIHggPSB4LCBtZXRob2QgPSBcIkxqdW5nQm94XCIpXG5cbm1lYW4oc29sYXJwdl9kZiRrV19HZW4pXG5zZChzb2xhcnB2X2RmJGtXX0dlbilcbmxlbmd0aChzb2xhcnB2X2RmJGtXX0dlbilcblxuXG4jZXN0aW1hdGUgYXJpbWEgbW9kZWxcbm1vZC4xIDwtIGFyaW1hKHNvbGFycHZfZGYka1dfR2VuLCBvcmRlcj1jKDEsMCwwKSwgbWV0aG9kID0gXCJNTFwiKVxubW9kLjIgPC0gc2FyaW1hKHNvbGFycHZfZGYka1dfR2VuLCBwID0gMSwgZCA9IDAsIHEgPSAwKVxubW9kLjFcbm1vZC4yXG4gXG4jZGlhZ25vc2UgYXJpbWEgbW9kZWxcbmFjZihtb2QuMSRyZXNpZHVhbHMpXG5wYWNmKG1vZC4xJHJlc2lkdWFscylcbkJveC50ZXN0KG1vZC4xJHJlc2lkdWFscylcblxuYGBgIn0= -->
+<pre class="r"><code>library(dplyr)
+solarpv_df &lt;- read.csv(&quot;solarpv.csv&quot;)
+
+# using the lapply function to look at the data type of each variable, and we see that our date is not in 
+# a date format 
+lapply(solarpv_df, class)
+
+# to transform, we are going to need the as.Date() function 
+solarpv_df$EDT &lt;- as.Date(solarpv_df$EDT, &quot;%a, %d %b %Y&quot;)
+lapply(solarpv_df, class)
+
+# https://www.statmethods.net/input/dates.html
+# now we can see we transformed the date properly
+
+
+# here we plot the series, a univariate series as we can see
+plot(y=solarpv_df$kW_Gen, x=solarpv_df$EDT, type='l')
+
+acf(solarpv_df$kW_Gen, lag.max = 24)
+pacf(solarpv_df$kW_Gen, lag.max = 24)
+
+# autocorrelation white noise test
+whiteNoiseTest(autocorrelations(solarpv_df$kW_Gen, maxlag = 24), h0 = &quot;iid&quot;, nlags = c(6,12,18,24), x = x, method = &quot;LjungBox&quot;)
+
+mean(solarpv_df$kW_Gen)
+sd(solarpv_df$kW_Gen)
+length(solarpv_df$kW_Gen)
+
+
+#estimate arima model
+mod.1 &lt;- arima(solarpv_df$kW_Gen, order=c(1,0,0), method = &quot;ML&quot;)
+mod.2 &lt;- sarima(solarpv_df$kW_Gen, p = 1, d = 0, q = 0)
+mod.1
+mod.2
+ 
+#diagnose arima model
+acf(mod.1$residuals)
+pacf(mod.1$residuals)
+Box.test(mod.1$residuals)
+</code></pre>
+<!-- rnb-source-end -->
+<!-- rnb-chunk-end -->
+<!-- rnb-text-begin -->
 </div>
 <div id="model-evaluation" class="section level2">
 <h2>Model Evaluation</h2>
@@ -251,7 +351,7 @@ co2_df &lt;- co2_df %&gt;%
 </div>
 </div>
 
-<div id="rmd-source-code">LS0tDQp0aXRsZTogIlR1dG9yaWFsIg0KYXV0aG9yOiAiSmFtZXkgTWNEb3dlbGwgYW5kIFN0ZWZmYW5pIEdvbWV6Ig0KZGF0ZTogIk1hcmNoIDEzLCAyMDE4Ig0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyB7LnRhYnNldCAudGFic2V0LWZhZGV9DQoNCiMjIEludHJvZHVjdGlvbg0KDQpUaGlzIHR1dG9yaWFsIGlzIGJ1aWxkIHVuZGVyIHRoZSBhc3N1bXB0aW9uIHRoYXQgdGhvc2UgcmVhZGluZyBhcmUgYWxyZWFkeSBmYW1pbGlhciB3aXRoIHVzaW5nIGRhdGFmcmFtZXMgaW4gUi4gIFRoaXMgaW5jbHVkZXMgZmFtaWxpYXJpdHkgd2l0aCBzdWJzZXR0aW5nIGFuZCB0aGUgbGlicmFyeSA8Y29kZT5kcGx5cjwvY29kZT4gZm9yIGRhdGEgbWFuaXB1bGF0aW9uLg0KDQpJbiBSIHRoZXJlIGFyZSB0d28gcHJpbWFyeSB0aW1lIHNlcmllcyBvYmplY3RzIHRoYXQgYXJlIHVzZWQuICBUaGVzZSBvYmplY3RzIGFyZSBlaXRoZXIgPGNvZGU+dHM8L2NvZGU+IG9yIDxjb2RlPnh0czwvY29kZT4uICANCg0KRm9yIHRoZSBwdXJwb3NlIG9mIHRoaXMgdHV0b3JpYWwsIHdlIGFyZSBnb2luZyB0byBmb2N1cyBvbiB1c2luZyA8Y29kZT50czwvY29kZT4gdG8gY3JlYXRlIHRpbWUtc2VyaWVzIG9iamVjdHMuICBSIHByZWxvYWRzIHRoaXMgZnVuY3Rpb24gdGhyb3VnaCB0aGUgPGNvZGU+c3RhdHM8L2NvZGU+IHBhY2thZ2UuDQoNCiMjIyBNYWtpbmcgYSBVbml2YXJpYXRlIFRpbWUtU2VyaWVzIE9iamVjdHMNCg0KQ29sdW1ucyBhcmUgdmFyaWFibGVzLCBvYnNlcnZhdGlvbnMgYXJlIHJvd3MuICBZb3UgY2FuIHZpZXcgYSB0aW1lLXNlcmllcyBvYmplY3QgdGhlIHNhbWUgd2F5IGFzIGEgbWF0cml4IG9yIGRhdGFmcmFtZS4gIEF0IGl0cyBjb3JlLCBhIHRpbWUtc2VyaWVzIG9iamVjdCBpcyBhIHZlY3RvciAodW5pdmFyaWF0ZSkgb3IgbWF0cml4IChtdWx0aXZhcmlhdGUpLiAgRGF0YWZyYW1lcyBhcmUgaW1wbGljaXRseSBjb252ZXJ0ZWQgdG8gbWF0cmljZXMgYmVmb3JlIHRoZXkgYXJlIGFjdHVhbGx5IGNvbnZlcnRlZCB0byBhIHRpbWUtc2VyaWVzIG9iamVjdC4NCg0KQ29uc2lkZXIsIGZvciBleGFtcGxlLCBsb2FkaW5nIHRoZSBjbzJfdHMuY3N2IGZpbGU6DQoNCmBgYHtyfQ0KY28yX2RmIDwtIHJlYWQuY3N2KCJjbzJfdHMuY3N2IikNCg0KY2xhc3MoY28yX2RmKQ0KYGBgDQoNCldoZW4gZmlyc3QgbG9hZGVkLCBub3RlIHRoYXQgUiBzYXZlcyB0aGUgZmlsZSBhcyBhIGRhdGEgZnJhbWUuICBUaGVyZWZvcmUgd2UgbXVzdCBjb252ZXJ0IHRoZSBkYXRhIGZyYW1lIHRvIGEgdGltZSBzZXJpZXMgb2JqZWN0LiAgVG8gbWFrZSBhIHRpbWUgc2VyaWVzIG9iamVjdCwgd2UgbmVlZCB0byBrbm93IHRoZSBzdGFydCwgZW5kLCBhbmQgZnJlcXVlbmN5IGZvciBvdXIgZGF0YS4gIEZvciB0aGlzIGNzdiBmaWxlLCB0aGUgZGF0YSBpcyBhbHJlYWR5IHNvcnRlZCBmb3IgdXMuICBJZiB0aGlzIHdlcmUgbm90IHRoZSBjYXNlLCB3ZSBjb3VsZCB1c2UgdGhlIDxjb2RlPmFycmFuZ2U8L2NvZGU+IGZ1bmN0aW9uIGZyb20gPGNvZGU+ZHBseXI8L2NvZGU+IHBhY2thZ2UgdG8gc29ydCB0aGUgZGF0YSBpbnN0ZWFkLiAgQmVjYXVzZSB3ZSBhbHJlYWR5IGhhdmUgdGhlIG1vbnRoIG51bWJlciBpbiBvbmUgY29sdW1uIGFuZCB0aGUgeWVhciBjb2x1bW4gaW4gYW5vdGhlciwgd2UgY2FuIHNvcnQgdGhlIGRhdGEgYWNjb3JkaW5nbHk6DQoNCmBgYHtyLCBvdXRwdXQgPSBGQUxTRX0NCmxpYnJhcnkoZHBseXIpDQoNCmNvMl9kZiA8LSBjbzJfZGYgJT4lDQogIGFycmFuZ2UoWWVhciwgTW9udGgpDQpgYGANCg0KQnkgdmlzdWFsbHkgaW5zcGVjdGluZyB0aGlzIG5ld2x5IGFycmFuZ2VkIGRhdGEsIHdlIHNlZSB0aGF0IHRoZSBkYXRhc2V0IHJ1bnMgZnJvbSA8Y29kZT4wNS0xOTc0PC9jb2RlPiB0byA8Y29kZT4wOS0xOTg3PC9jb2RlPi4gIFRoZXJlZm9yZSB3ZSB3aWxsIHNwZWNpZnkgdGhlIHN0YXJ0IGFuZCBlbmQgZGF0ZXMgYWNjb3JkaW5nbHkgd2hlbiBtYWtpbmcgdGhlIHRpbWUgc2VyaWVzIG9iamVjdHMuICBCZWNhdXNlIHdlIGFyZSBkZWFsaW5nIHdpdGggbW9udGhseSBkYXRhLCB3ZSBzZXQgdGhlIGZyZXF1ZW5jeSBhcmd1bWVudCB0byAxMi4NCg0KV2UgYWxzbyBzZWUgdGhhdCB3ZSBhcmUgZGVhbGluZyB3aXRoIHVuaXZhcmlhdGUgZGF0YS4gIFRoZXJlZm9yZSB3aGVuIG1ha2luZyB0aGUgdGltZSBzZXJpZXMgb2JqZWN0LCB3ZSBvbmx5IG5lZWQgdG8gdGFrZSB0aGUgPGNvZGU+Q08yPC9jb2RlPiBjb2x1bW4gZnJvbSB0aGUgZGF0YSBmcmFtZS4NCg0KYGBge3J9DQpjbzJfdHMgPC0gdHMoY28yX2RmJENPMiwgc3RhcnQgPSBjKDE5NzQsIDUpLCBlbmQgPSBjKDE5ODcsIDkpLCBmcmVxdWVuY3kgPSAxMikNCmBgYA0KDQpUaGlzIGNvZGUgdG9vayBvbmx5IHRoZSA8Y29kZT5DTzI8L2NvZGU+IGNvbHVtbiBmcm9tIG91ciBvcmlnaW5hbCBkYXRhIGZyYW1lIHNpbmNlIHRoaXMgaXMgdGhlIG9ubHkgY29sdW1uIHRoYXQgY29udGFpbnMgZGF0YSBub3QgcGVydGFpbmluZyB0byB0aGUgZGF0ZS4NCg0KT3VyIG5ldyBvYmplY3QgaXMgb2YgdHlwZSA8Y29kZT50czwvY29kZT4uDQoNCmBgYHtyfQ0KY2xhc3MoY28yX3RzKQ0KYGBgDQoNCiMjIyBNYWtpbmcgYSBNdWx0aXZhcmlhdGUgVGltZSBTZXJpZXMgT2JqZWN0DQoNCldpbGwgZmlsbCB0aGlzIGluIG9uY2Ugd2UgaGF2ZSBhIG11bHRpdmFyaWF0ZSB0aW1lIHNlcmllcyBzZXQgdG8gd29yayB3aXRoLg0KDQojIyBMaWJyYXJpZXMNCg0KIyMgRURBIFR1dG9yaWFsDQoNCiMjIFNlYXNvbmFsaXR5DQoNCiMjIE1vZGVscw0KDQojIyBNb2RlbCBFdmFsdWF0aW9uDQoNCg0KDQo=</div>
+<div id="rmd-source-code">LS0tDQp0aXRsZTogIlR1dG9yaWFsIg0KYXV0aG9yOiAiSmFtZXkgTWNEb3dlbGwgYW5kIFN0ZWZmYW5pIEdvbWV6Ig0KZGF0ZTogIk1hcmNoIDEzLCAyMDE4Ig0Kb3V0cHV0OiBodG1sX25vdGVib29rDQotLS0NCg0KIyB7LnRhYnNldCAudGFic2V0LWZhZGV9DQoNCiMjIEludHJvZHVjdGlvbg0KDQpUaGlzIHR1dG9yaWFsIGlzIGZvciB0aG9zZSBhbHJlYWR5IGZhbWlsaWFyIHdpdGggdXNpbmcgZGF0YWZyYW1lcyBpbiBSLiAgVGhpcyBpbmNsdWRlcyBmYW1pbGlhcml0eSB3aXRoIHN1YnNldHRpbmcgYW5kIHRoZSBsaWJyYXJ5IDxjb2RlPmRwbHlyPC9jb2RlPiBmb3IgZGF0YSBtYW5pcHVsYXRpb24uDQoNCkluIFIgdGhlcmUgYXJlIHR3byBwcmltYXJ5IHRpbWUgc2VyaWVzIG9iamVjdHMgdGhhdCBhcmUgdXNlZC4gIFRoZXNlIG9iamVjdHMgYXJlIGVpdGhlciA8Y29kZT50czwvY29kZT4gb3IgPGNvZGU+eHRzPC9jb2RlPi4gIA0KDQpGb3IgdGhlIHB1cnBvc2Ugb2YgdGhpcyB0dXRvcmlhbCwgd2UgYXJlIGdvaW5nIHRvIGZvY3VzIG9uIHVzaW5nIDxjb2RlPnRzPC9jb2RlPiB0byBjcmVhdGUgdGltZS1zZXJpZXMgb2JqZWN0cy4gIFIgcHJlbG9hZHMgdGhpcyBmdW5jdGlvbiB0aHJvdWdoIHRoZSA8Y29kZT5zdGF0czwvY29kZT4gcGFja2FnZS4NCg0KIyMjIE1ha2luZyBhIFVuaXZhcmlhdGUgVGltZS1TZXJpZXMgT2JqZWN0cw0KDQpDb2x1bW5zIGFyZSB2YXJpYWJsZXMsIG9ic2VydmF0aW9ucyBhcmUgcm93cy4gIFlvdSBjYW4gdmlldyBhIHRpbWUtc2VyaWVzIG9iamVjdCB0aGUgc2FtZSB3YXkgYXMgYSBtYXRyaXggb3IgZGF0YWZyYW1lLiAgQXQgaXRzIGNvcmUsIGEgdGltZS1zZXJpZXMgb2JqZWN0IGlzIGEgdmVjdG9yICh1bml2YXJpYXRlKSBvciBtYXRyaXggKG11bHRpdmFyaWF0ZSkuICBEYXRhZnJhbWVzIGFyZSBpbXBsaWNpdGx5IGNvbnZlcnRlZCB0byBtYXRyaWNlcyBiZWZvcmUgdGhleSBhcmUgYWN0dWFsbHkgY29udmVydGVkIHRvIGEgdGltZS1zZXJpZXMgb2JqZWN0Lg0KDQpDb25zaWRlciwgZm9yIGV4YW1wbGUsIGxvYWRpbmcgdGhlIGNvMl90cy5jc3YgZmlsZToNCg0KYGBge3J9DQpjbzJfZGYgPC0gcmVhZC5jc3YoImNvMl90cy5jc3YiKQ0KDQpjbGFzcyhjbzJfZGYpDQpgYGANCg0KV2hlbiBmaXJzdCBsb2FkZWQsIG5vdGUgdGhhdCBSIHNhdmVzIHRoZSBmaWxlIGFzIGEgZGF0YSBmcmFtZS4gIFRoZXJlZm9yZSB3ZSBtdXN0IGNvbnZlcnQgdGhlIGRhdGEgZnJhbWUgdG8gYSB0aW1lIHNlcmllcyBvYmplY3QuICBUbyBtYWtlIGEgdGltZSBzZXJpZXMgb2JqZWN0LCB3ZSBuZWVkIHRvIGtub3cgdGhlIHN0YXJ0LCBlbmQsIGFuZCBmcmVxdWVuY3kgZm9yIG91ciBkYXRhLiAgRm9yIHRoaXMgY3N2IGZpbGUsIHRoZSBkYXRhIGlzIGFscmVhZHkgc29ydGVkIGZvciB1cy4gIElmIHRoaXMgd2VyZSBub3QgdGhlIGNhc2UsIHdlIGNvdWxkIHVzZSB0aGUgPGNvZGU+YXJyYW5nZTwvY29kZT4gZnVuY3Rpb24gZnJvbSA8Y29kZT5kcGx5cjwvY29kZT4gcGFja2FnZSB0byBzb3J0IHRoZSBkYXRhIGluc3RlYWQuICBCZWNhdXNlIHdlIGFscmVhZHkgaGF2ZSB0aGUgbW9udGggbnVtYmVyIGluIG9uZSBjb2x1bW4gYW5kIHRoZSB5ZWFyIGNvbHVtbiBpbiBhbm90aGVyLCB3ZSBjYW4gc29ydCB0aGUgZGF0YSBhY2NvcmRpbmdseToNCg0KYGBge3IsIG91dHB1dCA9IEZBTFNFfQ0KbGlicmFyeShkcGx5cikNCg0KY28yX2RmIDwtIGNvMl9kZiAlPiUNCiAgYXJyYW5nZShZZWFyLCBNb250aCkNCmBgYA0KDQpCeSB2aXN1YWxseSBpbnNwZWN0aW5nIHRoaXMgbmV3bHkgYXJyYW5nZWQgZGF0YSwgd2Ugc2VlIHRoYXQgdGhlIGRhdGFzZXQgcnVucyBmcm9tIDxjb2RlPjA1LTE5NzQ8L2NvZGU+IHRvIDxjb2RlPjA5LTE5ODc8L2NvZGU+LiAgVGhlcmVmb3JlIHdlIHdpbGwgc3BlY2lmeSB0aGUgc3RhcnQgYW5kIGVuZCBkYXRlcyBhY2NvcmRpbmdseSB3aGVuIG1ha2luZyB0aGUgdGltZSBzZXJpZXMgb2JqZWN0cy4gIEJlY2F1c2Ugd2UgYXJlIGRlYWxpbmcgd2l0aCBtb250aGx5IGRhdGEsIHdlIHNldCB0aGUgZnJlcXVlbmN5IGFyZ3VtZW50IHRvIDEyLg0KDQpXZSBhbHNvIHNlZSB0aGF0IHdlIGFyZSBkZWFsaW5nIHdpdGggdW5pdmFyaWF0ZSBkYXRhLiAgVGhlcmVmb3JlIHdoZW4gbWFraW5nIHRoZSB0aW1lIHNlcmllcyBvYmplY3QsIHdlIG9ubHkgbmVlZCB0byB0YWtlIHRoZSA8Y29kZT5DTzI8L2NvZGU+IGNvbHVtbiBmcm9tIHRoZSBkYXRhIGZyYW1lLg0KDQpgYGB7cn0NCmNvMl90cyA8LSB0cyhjbzJfZGYkQ08yLCBzdGFydCA9IGMoMTk3NCwgNSksIGVuZCA9IGMoMTk4NywgOSksIGZyZXF1ZW5jeSA9IDEyKQ0KYGBgDQoNClRoaXMgY29kZSB0b29rIG9ubHkgdGhlIDxjb2RlPkNPMjwvY29kZT4gY29sdW1uIGZyb20gb3VyIG9yaWdpbmFsIGRhdGEgZnJhbWUgc2luY2UgdGhpcyBpcyB0aGUgb25seSBjb2x1bW4gdGhhdCBjb250YWlucyBkYXRhIG5vdCBwZXJ0YWluaW5nIHRvIHRoZSBkYXRlLg0KDQpPdXIgbmV3IG9iamVjdCBpcyBvZiB0eXBlIDxjb2RlPnRzPC9jb2RlPi4NCg0KYGBge3J9DQpjbGFzcyhjbzJfdHMpDQpgYGANCg0KIyMjIE1ha2luZyBhIE11bHRpdmFyaWF0ZSBUaW1lIFNlcmllcyBPYmplY3QNCg0KV2lsbCBmaWxsIHRoaXMgaW4gb25jZSB3ZSBoYXZlIGEgbXVsdGl2YXJpYXRlIHRpbWUgc2VyaWVzIHNldCB0byB3b3JrIHdpdGguDQoNCiMjIExpYnJhcmllcw0KDQpUaGUgbWFpbiBsaWJyYXJ5IHVzZWQgZm9yIGZvcmVjYXN0aW5nIGluIFIgaXMgKHN1cnByaXNlKSB0aGUgPGNvZGU+Zm9yZWNhc3Q8L2NvZGU+IHBhY2thZ2UhDQoNCmBgYHtyfQ0KbGlicmFyeShmb3JlY2FzdCkNCmBgYA0KDQpXaXRoIHRoaXMgcGFja2FnZSBjb21lIHNldmVyYWwgdXNlZnVsIGZ1bmN0aW9ucy4gIFRoZSBvbmVzIHRoYXQgd2UgYXJlIGdvaW5nIHRvIGRpc2N1c3MgaW4gdGhpcyB0dXRvcmlhbCBpbmNsdWRlIC4uLiBUaGUgZnVsbCB1c2VzIG9mIHRoaXMgcGFja2FnZSBjYW4gYmUgZm91bmQgYXQgaHR0cHM6Ly9jcmFuLnItcHJvamVjdC5vcmcvd2ViL3BhY2thZ2VzL2ZvcmVjYXN0L2ZvcmVjYXN0LnBkZi4NCg0KIyMgTWVzc3kgRGF0YSBFeGFtcGxlcw0KDQpDb25zaWRlciB0aGUgY2gxX2RlbW9kYXQuY3N2IGZpbGUgZnJvbSBjbGFzcyBvbiBNYXJjaCAxNS4gIFRoaXMgZGF0YSBoYXMgYm90aCBtaXNzaW5nIHZhbHVlcyBhbmQgYSBkaWZmaWN1bHQtdG8tcGFyc2UgPGNvZGU+ZHRkYXRlPC9jb2RlPiB2YXJpYWJsZS4gIFdlIHdpbGwgZmlyc3Qgd29yayBvbiB0aGUgPGNvZGU+ZHRkYXRlPC9jb2RlPiB2YXJpYWJsZSBieSB1c2luZyB0aGUgPGNvZGU+c3RycHRpbWU8L2NvZGU+IGZ1bmN0aW9uLg0KDQpgYGB7cn0NCmNoMV9kZW1vZGF0IDwtIHJlYWQuY3N2KCJjaDFfZGVtb2RhdC5jc3YiKQ0KDQpjaDFfZGVtb2RhdCR0aW1lIDwtIHN0cnB0aW1lKGNoMSRkdGRhdGUsIGZvcm1hdCA9ICclZCViJVk6JVQnKQ0KYGBgDQoNCk5vdGUgdGhlIHdlaXJkIGZvcm1hdCBhcmd1bWVudC4gIExvb2sgbW9yZSBhdCB0aGUgPGNvZGU+c3RycHRpbWU8L2NvZGU+IGZ1bmN0aW9uIGZvciBtb3JlIGluZm9ybXJhdGlvbiBvbiBob3cgSSBjaG9zZSB0aGlzIGJ5IHR5cGluZyAiP3N0cnB0aW1lIiBpbiB0aGUgY29uc29sZS4NCg0KVGhlIHByaW1hcnkgcmVhc29uaW5nIGhlcmUgaXMgdGhhdCBSIHN0b3JlcyB0aW1lIHZhcmlhYmxlcyBhcyBlaXRoZXIgYSAgPGNvZGU+UE9TSVhsdDwvY29kZT4gb2JqZWN0IGZvciANCg0KVGhlcmUgaXMgYSBtYWluIGxpYnJhcnkgaW4gUiBmb3IgZm9yZWNhc3RpbmcuIFRoaXMgaXMgdGhlICpzYXJpbWEqIGxpYnJhcnksIHdoaWNoIGhhbmRsZXMgQVJNQSBhbmQgQVJJTUEgbW9kZWxzIGZvciB1cywgYWxsb3dpbmcgdXMgdG8gc2V0IHBhcmFtZXRlcnMgZWFzaWx5Lg0KDQpgYGB7cn0NCmxpYnJhcnkoc2FyaW1hKQ0KYGBgDQoNClRoZSBzZWNvbmQgbGlicmFyeSBpcyB0aGUgKmFzdHNhKiBsaWJyYXJ5LCB3aGljaCBsZXRzIHVzIHJ1biBhcmltYSB3aXRoIGEgY29uc3RhbnQgdnMgcnVubmluZyBhcmltYSB3aXRob3V0IGEgY29uc3RhbnQuDQoNCmBgYHtyfQ0KbGlicmFyeShhc3RzYSkNCmBgYA0KDQojIyBFREEgVHV0b3JpYWwNCg0KV2UgY2FuIHVzZSB0aGUgYmFzaWMgcGxvdCBmdW5jdGlvbiB0byB2aXN1YWxpemUgdGhlIGRhdGEgc2V0Og0KDQpgYGB7cn0NCnBsb3QoY28yX3RzKQ0KYGBgDQoNCmBgYHtyfQ0KQWNmKGNvMl90cykNCmBgYA0KDQoNCiMjIFNlYXNvbmFsaXR5DQoNCiMjIE1vZGVscw0KDQpUaGlzIGlzIGFuIGV4YW1wbGUgb2YgZm9yZWNhc3RpbmcgaW4gUi4NCg0KYGBge3J9DQpsaWJyYXJ5KGRwbHlyKQ0Kc29sYXJwdl9kZiA8LSByZWFkLmNzdigic29sYXJwdi5jc3YiKQ0KDQojIHVzaW5nIHRoZSBsYXBwbHkgZnVuY3Rpb24gdG8gbG9vayBhdCB0aGUgZGF0YSB0eXBlIG9mIGVhY2ggdmFyaWFibGUsIGFuZCB3ZSBzZWUgdGhhdCBvdXIgZGF0ZSBpcyBub3QgaW4gDQojIGEgZGF0ZSBmb3JtYXQgDQpsYXBwbHkoc29sYXJwdl9kZiwgY2xhc3MpDQoNCiMgdG8gdHJhbnNmb3JtLCB3ZSBhcmUgZ29pbmcgdG8gbmVlZCB0aGUgYXMuRGF0ZSgpIGZ1bmN0aW9uIA0Kc29sYXJwdl9kZiRFRFQgPC0gYXMuRGF0ZShzb2xhcnB2X2RmJEVEVCwgIiVhLCAlZCAlYiAlWSIpDQpsYXBwbHkoc29sYXJwdl9kZiwgY2xhc3MpDQoNCiMgaHR0cHM6Ly93d3cuc3RhdG1ldGhvZHMubmV0L2lucHV0L2RhdGVzLmh0bWwNCiMgbm93IHdlIGNhbiBzZWUgd2UgdHJhbnNmb3JtZWQgdGhlIGRhdGUgcHJvcGVybHkNCg0KDQojIGhlcmUgd2UgcGxvdCB0aGUgc2VyaWVzLCBhIHVuaXZhcmlhdGUgc2VyaWVzIGFzIHdlIGNhbiBzZWUNCnBsb3QoeT1zb2xhcnB2X2RmJGtXX0dlbiwgeD1zb2xhcnB2X2RmJEVEVCwgdHlwZT0nbCcpDQoNCmFjZihzb2xhcnB2X2RmJGtXX0dlbiwgbGFnLm1heCA9IDI0KQ0KcGFjZihzb2xhcnB2X2RmJGtXX0dlbiwgbGFnLm1heCA9IDI0KQ0KDQojIGF1dG9jb3JyZWxhdGlvbiB3aGl0ZSBub2lzZSB0ZXN0DQp3aGl0ZU5vaXNlVGVzdChhdXRvY29ycmVsYXRpb25zKHNvbGFycHZfZGYka1dfR2VuLCBtYXhsYWcgPSAyNCksIGgwID0gImlpZCIsIG5sYWdzID0gYyg2LDEyLDE4LDI0KSwgeCA9IHgsIG1ldGhvZCA9ICJManVuZ0JveCIpDQoNCm1lYW4oc29sYXJwdl9kZiRrV19HZW4pDQpzZChzb2xhcnB2X2RmJGtXX0dlbikNCmxlbmd0aChzb2xhcnB2X2RmJGtXX0dlbikNCg0KDQojZXN0aW1hdGUgYXJpbWEgbW9kZWwNCm1vZC4xIDwtIGFyaW1hKHNvbGFycHZfZGYka1dfR2VuLCBvcmRlcj1jKDEsMCwwKSwgbWV0aG9kID0gIk1MIikNCm1vZC4yIDwtIHNhcmltYShzb2xhcnB2X2RmJGtXX0dlbiwgcCA9IDEsIGQgPSAwLCBxID0gMCkNCm1vZC4xDQptb2QuMg0KIA0KI2RpYWdub3NlIGFyaW1hIG1vZGVsDQphY2YobW9kLjEkcmVzaWR1YWxzKQ0KcGFjZihtb2QuMSRyZXNpZHVhbHMpDQpCb3gudGVzdChtb2QuMSRyZXNpZHVhbHMpDQoNCmBgYA0KDQoNCiMjIE1vZGVsIEV2YWx1YXRpb24NCg0KDQoNCg==</div>
 
 
 
