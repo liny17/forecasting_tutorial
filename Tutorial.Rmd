@@ -5,8 +5,6 @@ date: "March 13, 2018"
 output: html_notebook
 ---
 
-# {.tabset .tabset-fade}
-
 ## Introduction
 
 This tutorial is for those already familiar with using dataframes in R.  This includes familiarity with subsetting and the library <code>dplyr</code> for data manipulation.
@@ -58,48 +56,33 @@ Will fill this in once we have a multivariate time series set to work with.
 
 ## Libraries
 
-<<<<<<< HEAD
 The main library used for forecasting in R is (surprise) the <code>forecast</code> package!
 
 ```{r}
 library(forecast)
+library(sarima)
+library(ggplot2)
 ```
 
 With this package come several useful functions.  The ones that we are going to discuss in this tutorial include ... The full uses of this package can be found at https://cran.r-project.org/web/packages/forecast/forecast.pdf.
 
-## Messy Data Examples
-
-Consider the ch1_demodat.csv file from class on March 15.  This data has both missing values and a difficult-to-parse <code>dtdate</code> variable.  We will first work on the <code>dtdate</code> variable by using the <code>strptime</code> function.
-
-```{r}
-ch1_demodat <- read.csv("ch1_demodat.csv")
-
-ch1_demodat$time <- strptime(ch1$dtdate, format = '%d%b%Y:%T')
-```
-
-Note the weird format argument.  Look more at the <code>strptime</code> function for more informration on how I chose this by typing "?strptime" in the console.
-
-The primary reasoning here is that R stores time variables as either a  <code>POSIXlt</code> object for 
-
-=======
-There is a main libraries in R for forecasting. This is the *sarima* library, which handles ARMA and ARIMA models for us, allowing us to set parameters easily.
-
-```{r}
-library(sarima)
-```
-
->>>>>>> 08457bf5dbd98d5a5f7bde0d8d01b72ecdf24738
+We can use the <code>sarima</code> library to handle ARMA and ARIMA models for us, allowing us to easier adjust our parameters.
 
 ## EDA Tutorial
 
 We can use the basic plot function to visualize the data set:
 
 ```{r}
-plot(co2_ts)
+autoplot(co2_ts)
 ```
 
 ```{r}
-Acf(co2_ts)
+ggAcf(co2_ts)
+```
+
+
+```{r}
+ggPacf(co2_ts)
 ```
 
 
@@ -128,8 +111,8 @@ lapply(solarpv_df, class)
 # here we plot the series, a univariate series as we can see
 plot(y=solarpv_df$kW_Gen, x=solarpv_df$EDT, type='l')
 
-acf(solarpv_df$kW_Gen, lag.max = 24)
-pacf(solarpv_df$kW_Gen, lag.max = 24)
+ggAcf(solarpv_df$kW_Gen, lag.max = 24)
+ggPacf(solarpv_df$kW_Gen, lag.max = 24)
 
 # autocorrelation white noise test
 whiteNoiseTest(autocorrelations(solarpv_df$kW_Gen, maxlag = 24), h0 = "iid", nlags = c(6,12,18,24), x = x, method = "LjungBox")
@@ -142,18 +125,43 @@ length(solarpv_df$kW_Gen)
 #estimate arima model
 mod.1 <- arima(solarpv_df$kW_Gen, order=c(1,0,0), method = "ML")
 mod.2 <- sarima(solarpv_df$kW_Gen, p = 1, d = 0, q = 0)
-mod.1
-mod.2
+summary(mod.1)
+summary(mod.2)
  
 #diagnose arima model
-acf(mod.1$residuals)
-pacf(mod.1$residuals)
+ggAcf(mod.1$residuals)
+ggPacf(mod.1$residuals)
 Box.test(mod.1$residuals)
 
 ```
 
+## Messy Data Examples
 
-## Model Evaluation
+### ch1_demodat.csv
+Consider the ch1_demodat.csv file from class on March 15.  This data has both missing values and a difficult-to-parse <code>dtdate</code> variable.  We will first work on the <code>dtdate</code> variable by using the <code>strptime</code> function.
 
+```{r}
+ch1_demodat <- read.csv("ch1_demodat.csv")
+
+ch1_demodat$time <- as.POSIXct(strptime(ch1_demodat$dtdate, format = '%d%b%Y:%T'))
+```
+
+Note the weird format argument.  Look more at the <code>strptime</code> function for more informration on how I chose this by typing "?strptime" in the console.
+
+The primary reasoning here is that R stores time variables as either a  <code>POSIXlt</code> object or a <code>POSIXct</code> object.  In this code, we converted first to a <code>POSIXlt</code> object before then converting to a <code>POSIXct</code> object.
+
+There are some differences between the two objects but for the purposes of this tutorial we will not go into them.
+
+We have the hourly data but we want to work with this at the monthly level.  To aggregate to the monthly level, we can use the <code>group_by</code> function in conjunction with the <code>floor_date</code> function, as demonstrated below.
+
+```{r}
+monthly_demodat <- ch1_demodat %>%
+  group_by(time = floor_date(time, "month")) %>%
+  summarize(units = sum(units, na.rm = TRUE))
+
+ts_monthly_demodat <- ts(monthly_demodat$units, start = c(2004, 01, 01), frequency = 12)
+
+autoplot(ts_monthly_demodat)
+```
 
 
