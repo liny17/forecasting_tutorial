@@ -7,7 +7,7 @@ output: html_notebook
 
 ## Introduction
 
-This tutorial is for those already familiar with using dataframes in R.  This includes familiarity with subsetting and the library <code>dplyr</code> for data manipulation.
+This tutorial is for those already familiar with using dataframes in R.  This assumes familiarity with subsetting and the library <code>dplyr</code> for data manipulation.
 
 In R there are two primary time series objects that are used.  These objects are either <code>ts</code> or <code>xts</code>.  
 
