@@ -58,7 +58,7 @@ Will fill this in once we have a multivariate time series set to work with.
 
 ## Libraries
 
-There are two main libraries in R for forecasting. The first is the *sarima* library, which handles ARMA and ARIMA models for us, allowing us to set parameters easily.
+There is a main libraries in R for forecasting. This is the *sarima* library, which handles ARMA and ARIMA models for us, allowing us to set parameters easily.
 
 ```{r}
 library(sarima)
