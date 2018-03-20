@@ -78,10 +78,7 @@ ch1_demodat$time <- strptime(ch1$dtdate, format = '%d%b%Y:%T')
 
 Note the weird format argument.  Look more at the <code>strptime</code> function for more informration on how I chose this by typing "?strptime" in the console.
 
-```{r}
-ch1_demodat_ts <- ts(ch1_demodat$units)
-```
-
+The primary reasoning here is that R stores time variables as either a  <code>POSIXlt</code> object for 
 
 
 ## EDA Tutorial
