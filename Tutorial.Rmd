@@ -62,6 +62,7 @@ The main library used for forecasting in R is (surprise) the <code>forecast</cod
 library(forecast)
 library(sarima)
 library(ggplot2)
+library(astsa)
 ```
 
 With this package come several useful functions.  The ones that we are going to discuss in this tutorial include ... The full uses of this package can be found at https://cran.r-project.org/web/packages/forecast/forecast.pdf.
@@ -93,7 +94,6 @@ ggPacf(co2_ts)
 This is an example of forecasting in R.
 
 ```{r}
-library(dplyr)
 solarpv_df <- read.csv("solarpv.csv")
 
 # using the lapply function to look at the data type of each variable, and we see that our date is not in 
