@@ -2,7 +2,9 @@
 title: "Tutorial"
 author: "Jamey McDowell and Steffani Gomez"
 date: "March 13, 2018"
-output: html_notebook
+output:
+  html_document:
+    df_print: paged
 ---
 
 ## Introduction
@@ -93,7 +95,7 @@ ggPacf(co2_ts)
 
 This is an example of forecasting in R.
 
-```{r}
+```{r, eval=TRUE}
 solarpv_df <- read.csv("solarpv.csv")
 solarpv_df
 ```
@@ -117,7 +119,7 @@ lapply(solarpv_df, class)
 # now we can see we transformed the date properly
 ```
 
-The first thing we do is plot the univariate time series, as well the ACF (autocorrelative function) and the PACF(partial autocorrelative function) for the series. 
+The first thing we do is plot the univariate time series, as well the ACF (autocorrelative function) and the PACF(partial autocorrelative function) for the series. Next, we determine whether the univariate time series is a white noise, using the Ljung-Box method, and parameters set. We also take a look at the mean, standard deviation, and length of the time series. 
 
 ```{r}
 # here we plot the series, a univariate series as we can see
@@ -125,11 +127,7 @@ plot(y=solarpv_df$kW_Gen, x=solarpv_df$EDT, type='l')
 
 ggAcf(solarpv_df$kW_Gen, lag.max = 24)
 ggPacf(solarpv_df$kW_Gen, lag.max = 24)
-```
 
-Next, we determine whether the univariate time series is a white noise, using the Ljung-Box method, and parameters set. We also take a look at the mean, standard deviation, and length of the time series. 
-
-```{r}
 # autocorrelation white noise test
 whiteNoiseTest(autocorrelations(solarpv_df$kW_Gen, maxlag = 24), h0 = "iid", nlags = c(6,12,18,24), x = x, method = "LjungBox")
 
@@ -178,6 +176,7 @@ There are some differences between the two objects but for the purposes of this 
 We have the hourly data but we want to work with this at the monthly level.  To aggregate to the monthly level, we can use the <code>group_by</code> function in conjunction with the <code>floor_date</code> function, as demonstrated below.
 
 ```{r}
+library(lubridate)
 monthly_demodat <- ch1_demodat %>%
   group_by(time = floor_date(time, "month")) %>%
   summarize(units = sum(units, na.rm = TRUE))
