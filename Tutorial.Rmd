@@ -95,39 +95,62 @@ This is an example of forecasting in R.
 
 ```{r}
 solarpv_df <- read.csv("solarpv.csv")
+solarpv_df
+```
 
+When we take a look at the dataset we have just loaded, the first thing we must do is ensure that our date is in the proper date format and that R recognizes that it is a date (i.e. make sure the dates belong to the Date class and are encoded properly). We use the <code>lapply</code> function to apply the <code>class</code> function and see what class each variable/column belongs to.
+
+```{r}
 # using the lapply function to look at the data type of each variable, and we see that our date is not in 
 # a date format 
 lapply(solarpv_df, class)
+```
 
+As we can see, the dates in the dataset are not encoded properly and need to be changed to dates in the Date class. https://www.statmethods.net/input/dates.html has a great explanation on the different date encodings to be used with <code>as.Date</code>. 
+
+```{r}
 # to transform, we are going to need the as.Date() function 
 solarpv_df$EDT <- as.Date(solarpv_df$EDT, "%a, %d %b %Y")
 lapply(solarpv_df, class)
 
 # https://www.statmethods.net/input/dates.html
 # now we can see we transformed the date properly
+```
 
+The first thing we do is plot the univariate time series, as well the ACF (autocorrelative function) and the PACF(partial autocorrelative function) for the series. 
 
+```{r}
 # here we plot the series, a univariate series as we can see
 plot(y=solarpv_df$kW_Gen, x=solarpv_df$EDT, type='l')
 
 ggAcf(solarpv_df$kW_Gen, lag.max = 24)
 ggPacf(solarpv_df$kW_Gen, lag.max = 24)
+```
 
+Next, we determine whether the univariate time series is a white noise, using the Ljung-Box method, and parameters set. We also take a look at the mean, standard deviation, and length of the time series. 
+
+```{r}
 # autocorrelation white noise test
 whiteNoiseTest(autocorrelations(solarpv_df$kW_Gen, maxlag = 24), h0 = "iid", nlags = c(6,12,18,24), x = x, method = "LjungBox")
 
 mean(solarpv_df$kW_Gen)
 sd(solarpv_df$kW_Gen)
 length(solarpv_df$kW_Gen)
+```
 
+Here we use both <code>arima</code> and <code>sarima</code> to forecase our ARMA model. <code>sarima</code> includes a constant while <code>arima</code> does not (because the default value of the argument *include.drift* is set to FALSE in <code>arima</code>; but you can change that manually). Using a constant for a differenced series (which is not this example) implies a linear trend for the original series.
 
+```{r}
 #estimate arima model
 mod.1 <- arima(solarpv_df$kW_Gen, order=c(1,0,0), method = "ML")
 mod.2 <- sarima(solarpv_df$kW_Gen, p = 1, d = 0, q = 0)
 summary(mod.1)
 summary(mod.2)
- 
+```
+
+Here we evaluate the model, looking at the ACF, PACF, and white noise test on the residuals. 
+
+```{r} 
 #diagnose arima model
 ggAcf(mod.1$residuals)
 ggPacf(mod.1$residuals)
