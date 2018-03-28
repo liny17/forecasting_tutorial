@@ -4,6 +4,7 @@ author: "Jamey McDowell and Steffani Gomez"
 date: "March 13, 2018"
 output: html_notebook
 ---
+# {.tabset .tabset-fade}
 
 ## Introduction
 
@@ -27,7 +28,7 @@ class(co2_df)
 
 When first loaded, note that R saves the file as a data frame.  Therefore we must convert the data frame to a time series object.  To make a time series object, we need to know the start, end, and frequency for our data.  For this csv file, the data is already sorted for us.  If this were not the case, we could use the <code>arrange</code> function from <code>dplyr</code> package to sort the data instead.  Because we already have the month number in one column and the year column in another, we can sort the data accordingly:
 
-```{r, output = FALSE}
+```{r, output = FALSE, message = FALSE}
 library(dplyr)
 
 co2_df <- co2_df %>%
@@ -56,16 +57,16 @@ Will fill this in once we have a multivariate time series set to work with.
 
 ## Libraries
 
-The main library used for forecasting in R is (surprise) the <code>forecast</code> package!
-
-```{r}
+```{r, message = FALSE, output = FALSE}
 library(forecast)
-library(sarima)
-library(ggplot2)
-library(astsa)
+library(sarima) # arima/arma models
+library(ggplot2) # plotting
+library(lubridate) # date subsetting
+library(astsa) # arima/arma models
+library(tseries) # ADF test
 ```
 
-With this package come several useful functions.  The ones that we are going to discuss in this tutorial include ... The full uses of this package can be found at https://cran.r-project.org/web/packages/forecast/forecast.pdf.
+THe primary library used for forecasting in R is the <code>forecast</code> package.  The full uses of this package can be found at https://cran.r-project.org/web/packages/forecast/forecast.pdf.
 
 We can use the <code>sarima</code> library to handle ARMA and ARIMA models for us, allowing us to easier adjust our parameters.
 
@@ -86,9 +87,6 @@ ggAcf(co2_ts)
 ggPacf(co2_ts)
 ```
 
-
-## Seasonality
-
 ## Models
 
 This is an example of forecasting in R.
@@ -100,7 +98,7 @@ solarpv_df <- read.csv("solarpv.csv")
 # a date format 
 lapply(solarpv_df, class)
 
-# to transform, we are going to need the as.Date() function 
+# to transform, we can use the as.Date() function 
 solarpv_df$EDT <- as.Date(solarpv_df$EDT, "%a, %d %b %Y")
 lapply(solarpv_df, class)
 
@@ -121,6 +119,9 @@ mean(solarpv_df$kW_Gen)
 sd(solarpv_df$kW_Gen)
 length(solarpv_df$kW_Gen)
 
+# Augmented Dicky Fuller Test
+
+adf.test(solarpv_df$kW_Gen)
 
 #estimate arima model
 mod.1 <- arima(solarpv_df$kW_Gen, order=c(1,0,0), method = "ML")
