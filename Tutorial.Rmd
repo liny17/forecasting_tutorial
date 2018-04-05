@@ -188,4 +188,156 @@ ts_monthly_demodat <- ts(monthly_demodat$units, start = c(2004, 01, 01), frequen
 autoplot(ts_monthly_demodat)
 ```
 
+## HW2
+
+# Q1
+```{r}
+hw21 <- read.csv("hw2/arma_series01.csv")
+hw21$Date <- as.Date(hw21$Date, "%d%b%Y")
+
+plot(y=hw21$Y, x=hw21$Date, type='l')
+
+ggAcf(hw21$Y, lag.max = 24)
+ggPacf(hw21$Y, lag.max = 24)
+
+# autocorrelation white noise test
+whiteNoiseTest(autocorrelations(hw21$Y, maxlag = 24), h0 = "iid", nlags = c(6,12,18,24), x = x, method = "LjungBox")
+
+mean(hw21$Y)
+sd(hw21$Y)
+length(hw21$Y)
+
+# not white noise from white noise test
+# MA(1/2) ?
+```
+
+#Q2
+```{r}
+hw22 <- read.csv("hw2/arma_series02.csv")
+hw22$Date <- as.Date(hw22$Date, "%d%b%Y")
+
+plot(y=hw22$Y, x=hw22$Date, type='l')
+
+ggAcf(hw22$Y, lag.max = 24)
+ggPacf(hw22$Y, lag.max = 24)
+
+# autocorrelation white noise test
+whiteNoiseTest(autocorrelations(hw22$Y, maxlag = 24), h0 = "iid", nlags = c(6,12,18,24), x = x, method = "LjungBox")
+
+mean(hw22$Y)
+sd(hw22$Y)
+length(hw22$Y)
+
+# not white noise
+# AR(2)
+```
+
+#Q3
+```{r}
+hw23 <- read.csv("hw2/arma_series03.csv")
+hw23$Date <- as.Date(hw23$Date, "%d%b%Y")
+
+plot(y=hw23$Y, x=hw23$Date, type='l')
+
+ggAcf(hw23$Y, lag.max = 24)
+ggPacf(hw23$Y, lag.max = 24)
+
+# autocorrelation white noise test
+whiteNoiseTest(autocorrelations(hw23$Y, maxlag = 24), h0 = "iid", nlags = c(6,12,18,24), x = x, method = "LjungBox")
+
+mean(hw23$Y)
+sd(hw23$Y)
+length(hw23$Y)
+
+# not white noise
+# MA(1)
+# AR(3)
+```
+
+#Q4
+```{r}
+hw24 <- read.csv("hw2/arma_series04.csv")
+hw24$Date <- as.Date(hw24$Date, "%d%b%Y")
+
+plot(y=hw24$Y, x=hw24$Date, type='l')
+
+ggAcf(hw24$Y, lag.max = 24)
+ggPacf(hw24$Y, lag.max = 24)
+
+# autocorrelation white noise test
+whiteNoiseTest(autocorrelations(hw24$Y, maxlag = 24), h0 = "iid", nlags = c(6,12,18,24), x = x, method = "LjungBox")
+
+mean(hw24$Y)
+sd(hw24$Y)
+length(hw24$Y)
+
+# not white noise
+# MA(2)
+# AR(3)
+```
+
+#Q5
+```{r}
+hw25 <- read.csv("hw2/arma_series05.csv")
+hw25$Date <- as.Date(hw25$Date, "%d%b%Y")
+
+plot(y=hw25$Y, x=hw25$Date, type='l')
+
+ggAcf(hw25$Y, lag.max = 24)
+ggPacf(hw25$Y, lag.max = 24)
+
+# autocorrelation white noise test
+whiteNoiseTest(autocorrelations(hw25$Y, maxlag = 24), h0 = "iid", nlags = c(6,12,18,24), x = x, method = "LjungBox")
+
+mean(hw25$Y)
+sd(hw25$Y)
+length(hw25$Y)
+
+# not white noise
+# MA(4)
+# AR(3)
+```
+
+#Q6
+```{r}
+hw26 <- read.csv("hw2/arma_series06.csv")
+hw26$Date <- as.Date(hw26$Date, "%d%b%Y")
+
+plot(y=hw26$Y, x=hw26$Date, type='l')
+
+ggAcf(hw26$Y, lag.max = 24)
+ggPacf(hw26$Y, lag.max = 24)
+
+# autocorrelation white noise test
+whiteNoiseTest(autocorrelations(hw26$Y, maxlag = 24), h0 = "iid", nlags = c(6,12,18,24), x = x, method = "LjungBox")
+
+mean(hw26$Y)
+sd(hw26$Y)
+length(hw26$Y)
+
+# not white noise
+# MA(2)
+# AR(3)
+```
+
+#Q7
+```{r}
+hw27 <- read.csv("hw2/arma_series07.csv")
+hw27$Date <- as.Date(hw27$Date, "%d%b%Y")
+
+plot(y=hw27$Y, x=hw27$Date, type='l')
+
+ggAcf(hw27$Y, lag.max = 24)
+ggPacf(hw27$Y, lag.max = 24)
+
+# autocorrelation white noise test
+whiteNoiseTest(autocorrelations(hw27$Y, maxlag = 24), h0 = "iid", nlags = c(6,12,18,24), x = x, method = "LjungBox")
+
+mean(hw27$Y)
+sd(hw27$Y)
+length(hw27$Y)
+
+# not white noise
+# AR(2)
+```
 
